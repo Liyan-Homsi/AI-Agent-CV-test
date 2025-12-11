@@ -1030,13 +1030,22 @@ html, body {
     Fix for Maximize Button Color
    ========================================= */
 
-/* Use the ID to force the Maximize button icon to be Gray */
-#maximize-uploaded-btn i {
+   .uploaded-cvs-section h3 .fa-folder-open {
+    color: var(--primary) !important;
+  }
+  /* 1. Force the FOLDER icon to stay TEAL */
+.uploaded-cvs-section h3 .fa-folder-open {
+  color: var(--primary) !important;
+}
+
+/* 2. Force the MAXIMIZE button icon to be GRAY (Muted) */
+/* We use the ID and button tag to be very specific */
+button#maximize-uploaded-btn i {
   color: var(--muted) !important;
 }
 
-/* When hovering ONLY the button, make the icon Teal */
-#maximize-uploaded-btn:hover i {
+/* 3. When hovering the button, turn the icon TEAL */
+button#maximize-uploaded-btn:hover i {
   color: var(--primary) !important;
 }
 
