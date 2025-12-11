@@ -1250,12 +1250,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   const maximizeRulesBtn = document.getElementById("maximize-rules-btn");
   const rulesModal = document.getElementById("rulesModal");
   const closeRulesModalBtn = document.getElementById("closeRulesModal");
-  // We don't need the "Done" button anymore.
   
   // Elements to move
   const rulesContainer = document.getElementById("rules-container");
-  // Note: addRuleBtn is already defined earlier in your code.
-  // Note: generateBtn is already defined earlier in your code.
+  // Note: addRuleBtn and generateBtn are defined earlier in your code
   
   // Destinations
   const rulesModalBody = document.getElementById("rules-modal-body");
@@ -1263,10 +1261,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const sidebarSection = document.querySelector(".merged-section"); 
 
   function toggleRulesModal(show) {
-    // Ensure all required elements exist before running
-    // We need the modal parts, plus the three elements we are moving
+    // Check if all elements exist
     if (!rulesModal || !rulesModalBody || !rulesModalFooter || !rulesContainer || !addRuleBtn || !generateBtn) {
-        console.error("Missing elements for maximize functionality");
         return;
     }
 
@@ -1289,8 +1285,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       rulesModal.style.display = "none";
       rulesModal.setAttribute("aria-hidden", "true");
 
-      // 2. Move elements BACK to sidebar in the correct order.
-      // We append them back to the sidebar container.
+      // 2. Move elements BACK to sidebar
       if (sidebarSection) {
         sidebarSection.appendChild(rulesContainer);
         sidebarSection.appendChild(addRuleBtn);
@@ -1298,6 +1293,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
   }
+
+  // --- Event Listeners ---
 
   if (maximizeRulesBtn) {
     maximizeRulesBtn.addEventListener("click", (e) => {
@@ -1310,11 +1307,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     closeRulesModalBtn.addEventListener("click", () => toggleRulesModal(false));
   }
 
-  // Close on outside click
+  // Close on outside click (clicking the dark background)
   window.addEventListener("click", (e) => {
     if (e.target === rulesModal) {
       toggleRulesModal(false);
     }
   });
+
+  // NEW: Auto-close modal when "Generate Recommendations" is clicked
+  if (generateBtn) {
+    generateBtn.addEventListener("click", () => {
+      // If the modal is currently visible...
+      if (rulesModal && rulesModal.style.display !== 'none') {
+        // ...close it immediately so the user sees the main screen results
+        toggleRulesModal(false);
+      }
+    });
+  }
   // end 11-12-2025 Liyan's updates
 });
