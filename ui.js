@@ -1247,79 +1247,61 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Business Rules Maximize Logic (11-12-2025 Liyan's updates)
   // ===========================================================================
 
-  // ===========================================================================
-  // Business Rules Maximize Logic (Debug Version)
-  // ===========================================================================
-  console.log("Initializing Business Rules Maximize Logic...");
-
   const maximizeRulesBtn = document.getElementById("maximize-rules-btn");
   const rulesModal = document.getElementById("rulesModal");
   const closeRulesModalBtn = document.getElementById("closeRulesModal");
-  const saveRulesModalBtn = document.getElementById("saveRulesModalBtn");
+  // We don't need the "Done" button anymore.
   
+  // Elements to move
   const rulesContainer = document.getElementById("rules-container");
-  // Note: addRuleBtn is defined earlier in your file.
+  // Note: addRuleBtn is already defined earlier in your code.
+  // Note: generateBtn is already defined earlier in your code.
   
+  // Destinations
   const rulesModalBody = document.getElementById("rules-modal-body");
-  // The section that currently holds the rules
+  const rulesModalFooter = document.getElementById("rules-modal-footer");
   const sidebarSection = document.querySelector(".merged-section"); 
-  // The button below the rules, used as a marker to put things back
-  const referenceNode = document.getElementById("generate-recommendations-btn"); 
-
-  // --- DEBUG CHECKS ---
-  console.log("Elements found:", {
-    maximizeRulesBtn: maximizeRulesBtn,
-    rulesModal: rulesModal,
-    rulesContainer: rulesContainer,
-    addRuleBtn: typeof addRuleBtn !== 'undefined' ? addRuleBtn : 'NOT FOUND (check earlier definition)',
-    rulesModalBody: rulesModalBody,
-    sidebarSection: sidebarSection,
-    referenceNode: referenceNode
-  });
-
-  if (!maximizeRulesBtn || !rulesModal || !rulesContainer || !addRuleBtn || !rulesModalBody) {
-    console.error("CRITICAL ERROR: One or more required elements for the maximize function were not found. Check IDs in index.html.");
-  }
-  // --------------------
 
   function toggleRulesModal(show) {
-    console.log(`toggleRulesModal called with show=${show}`);
-    if (!rulesModal || !rulesContainer || !addRuleBtn) {
-      console.error("Cannot toggle modal: missing essential elements.");
-      return;
+    // Ensure all required elements exist before running
+    // We need the modal parts, plus the three elements we are moving
+    if (!rulesModal || !rulesModalBody || !rulesModalFooter || !rulesContainer || !addRuleBtn || !generateBtn) {
+        console.error("Missing elements for maximize functionality");
+        return;
     }
 
     if (show) {
-      console.log("Moving elements to modal...");
-      if (rulesModalBody) {
-        // Move the container and the add button into the modal's body
-        rulesModalBody.appendChild(rulesContainer);
-        rulesModalBody.appendChild(addRuleBtn);
-      }
+      // --- OPENING MODAL ---
+      // 1. Move rules and add button to modal body
+      rulesModalBody.appendChild(rulesContainer);
+      rulesModalBody.appendChild(addRuleBtn);
       
+      // 2. Move generate button to modal footer
+      rulesModalFooter.appendChild(generateBtn);
+
+      // 3. Show modal
       rulesModal.style.display = "flex";
       rulesModal.setAttribute("aria-hidden", "false");
+
     } else {
-      console.log("Moving elements back to sidebar...");
+      // --- CLOSING MODAL ---
+      // 1. Hide modal
       rulesModal.style.display = "none";
       rulesModal.setAttribute("aria-hidden", "true");
 
-      // Move elements back to their original place in the sidebar
-      if (sidebarSection && referenceNode) {
-        // Insert *before* the "Generate Recommendations" button
-        sidebarSection.insertBefore(addRuleBtn, referenceNode);
-        // Insert the rules container *before* the "Add Rule" button
-        sidebarSection.insertBefore(rulesContainer, addRuleBtn);
-      } else {
-        console.error("Could not put elements back: sidebarSection or referenceNode not found.");
+      // 2. Move elements BACK to sidebar in the correct order.
+      // We append them back to the sidebar container.
+      if (sidebarSection) {
+        sidebarSection.appendChild(rulesContainer);
+        sidebarSection.appendChild(addRuleBtn);
+        sidebarSection.appendChild(generateBtn);
       }
     }
   }
 
   if (maximizeRulesBtn) {
     maximizeRulesBtn.addEventListener("click", (e) => {
-      console.log("Maximize button clicked!");
-      e.preventDefault();
+      e.preventDefault(); 
       toggleRulesModal(true);
     });
   }
@@ -1328,15 +1310,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     closeRulesModalBtn.addEventListener("click", () => toggleRulesModal(false));
   }
 
-  if (saveRulesModalBtn) {
-    saveRulesModalBtn.addEventListener("click", () => toggleRulesModal(false));
-  }
-
+  // Close on outside click
   window.addEventListener("click", (e) => {
     if (e.target === rulesModal) {
       toggleRulesModal(false);
     }
   });
-
   // end 11-12-2025 Liyan's updates
 });
