@@ -1024,6 +1024,24 @@ html, body {
     left: auto;
     right: 14px; /* Move icon to right */
   }
+
+
+  /* =========================================
+   Fix Uploaded CVs Maximize Button Color
+   ========================================= */
+
+/* The section header forces all icons to be Teal. 
+   This overrides it ONLY for the maximize button to make it gray (muted) like the others. */
+.uploaded-cvs-section h3 .icon-btn i {
+  color: var(--muted) !important;
+}
+
+/* Ensure it still turns Teal when you hover over it */
+.uploaded-cvs-section h3 .icon-btn:hover i {
+  color: var(--primary) !important;
+}
+
+
   /* 11-12-2025 liyan's updates */
 
 
