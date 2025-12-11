@@ -145,7 +145,12 @@
       <div class="cv-modal-content">
         <button class="cv-close-btn" aria-label="Close CV modal">&times;</button>
         <h2 id="cvModalTitle">CV Analysis Review</h2>
-    
+        <div class="cv-search-container">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" id="cvSearchInput" placeholder="Search CV by name..." class="cv-search-input" autocomplete="off" />
+        </div>
+
+        <div id="cvTabsContainer" class="cv-tabs" role="tablist"></div>
         <div id="cvTabsContainer" class="cv-tabs" role="tablist"></div>
         <div id="cvResultsContainer" class="cv-results" role="region"></div>
         <button id="submitCvReview" class="cv-submit-btn">Submit</button>
