@@ -478,13 +478,11 @@ button:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
 }
 
 /* =========================================
-   Arabic Modal Fixes
+   Arabic Modal Close Button Fix
    ========================================= */
-
-/* Move the close button to the left for Arabic modals to prevent overlap with text */
-html[lang="ar"] .cv-close-btn {
-  right: auto;
-  left: 14px;
+html[lang="ar"] .cv-modal .cv-close-btn {
+  right: auto !important;
+  left: 14px !important;
 }
 
 /* end 11-12-2025 Liyan's updates */
