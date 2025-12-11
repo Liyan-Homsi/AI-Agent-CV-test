@@ -691,9 +691,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   const recommendationsContainer = document.getElementById("recommendations-container");
 
   const renderSubmittedCvBubbles = (allResults) => {
+    // 11-12-2025 liyan's updates
+    const counterEl = document.getElementById("uploaded-cv-count");
+    if (counterEl) {
+      counterEl.textContent = allResults ? allResults.length : 0;
+    }
+
     const container = document.getElementById("submitted-cv-bubbles");
     if (!container) return;
     container.innerHTML = "";
+    // 11-12-2025 end liyan's updates
 
     allResults.forEach((cv, idx) => {
       const bubble = document.createElement("div");
