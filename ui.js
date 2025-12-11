@@ -1331,5 +1331,26 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
   }
+
+  // ===========================================================================
+  // Uploaded CVs Maximize Logic (Opens CV Analysis Review)
+  // ===========================================================================
+  const maximizeUploadedBtn = document.getElementById("maximize-uploaded-btn");
+
+  if (maximizeUploadedBtn) {
+    maximizeUploadedBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      
+      // Check if we have any processed CVs to show
+      // submittedCvData is the variable holding your analyzed CVs
+      if (typeof submittedCvData !== 'undefined' && submittedCvData.length > 0) {
+        // Open the existing CV Modal, defaulting to the first CV
+        openCvModal(submittedCvData, 0);
+      } else {
+        // Simple feedback if clicked while empty
+        alert("Please upload and analyze a CV first to view details.");
+      }
+    });
+  }
   // end 11-12-2025 Liyan's updates
 });
