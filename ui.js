@@ -529,7 +529,12 @@ function openCvModal(allCvResults, initialIndex = 0) {
   const tabs = document.getElementById("cvTabsContainer");
   const content = document.getElementById("cvResultsContainer");
   const submitBtn = document.getElementById("submitCvReview");
+  
+  //11-12-2025 liyan
+  const searchInput = document.getElementById("cvSearchInput");
   if (!modal || !tabs || !content) return;
+  //11-12-2025 liyan
+  if (searchInput) searchInput.value = "";
 
   modalCvData = deepClone(allCvResults || []);
   activeCvIndex = initialIndex;
@@ -1350,6 +1355,28 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Simple feedback if clicked while empty
         alert("Please upload and analyze a CV first to view details.");
       }
+    });
+  }
+
+  // ===========================================================================
+  // CV Search / Filter Logic
+  // ===========================================================================
+  const cvSearchInput = document.getElementById("cvSearchInput");
+  
+  if (cvSearchInput) {
+    cvSearchInput.addEventListener("input", (e) => {
+      const searchTerm = e.target.value.toLowerCase().trim();
+      const tabs = document.querySelectorAll(".cv-tab");
+      
+      tabs.forEach(tab => {
+        const name = (tab.textContent || "").toLowerCase();
+        // Toggle visibility based on match
+        if (name.includes(searchTerm)) {
+          tab.style.display = ""; // Reset to default (flex/block)
+        } else {
+          tab.style.display = "none";
+        }
+      });
     });
   }
   // end 11-12-2025 Liyan's updates
