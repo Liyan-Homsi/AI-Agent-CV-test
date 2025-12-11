@@ -1251,31 +1251,40 @@ document.addEventListener("DOMContentLoaded", async () => {
   const rulesModal = document.getElementById("rulesModal");
   const closeRulesModalBtn = document.getElementById("closeRulesModal");
   
-  // Elements to move
+  // Elements to move (these are defined earlier in your file)
   const rulesContainer = document.getElementById("rules-container");
-  // Note: addRuleBtn and generateBtn are defined earlier in your code
+  // Note: addRuleBtn is defined earlier
+  // Note: generateBtn is defined earlier
   
-  // Destinations
+  // Destinations inside the modal
   const rulesModalBody = document.getElementById("rules-modal-body");
+  // NEW: The container for the add button on the white background
+  const rulesModalAddContainer = document.getElementById("rules-modal-add-container");
   const rulesModalFooter = document.getElementById("rules-modal-footer");
+  
+  // Destination when closing (the sidebar)
   const sidebarSection = document.querySelector(".merged-section"); 
 
   function toggleRulesModal(show) {
-    // Check if all elements exist
-    if (!rulesModal || !rulesModalBody || !rulesModalFooter || !rulesContainer || !addRuleBtn || !generateBtn) {
+    // Ensure all required elements exist before running
+    if (!rulesModal || !rulesModalBody || !rulesModalAddContainer || !rulesModalFooter || !rulesContainer || !addRuleBtn || !generateBtn) {
+        console.error("Missing elements for maximize functionality");
         return;
     }
 
     if (show) {
       // --- OPENING MODAL ---
-      // 1. Move rules and add button to modal body
-      rulesModalBody.appendChild(rulesContainer);
-      rulesModalBody.appendChild(addRuleBtn);
       
-      // 2. Move generate button to modal footer
+      // 1. Move ONLY the rules container to the gray modal body
+      rulesModalBody.appendChild(rulesContainer);
+      
+      // 2. Move the Add button to its new white container
+      rulesModalAddContainer.appendChild(addRuleBtn);
+      
+      // 3. Move generate button to modal footer
       rulesModalFooter.appendChild(generateBtn);
 
-      // 3. Show modal
+      // 4. Show modal
       rulesModal.style.display = "flex";
       rulesModal.setAttribute("aria-hidden", "false");
 
@@ -1285,7 +1294,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       rulesModal.style.display = "none";
       rulesModal.setAttribute("aria-hidden", "true");
 
-      // 2. Move elements BACK to sidebar
+      // 2. Move elements BACK to sidebar in the correct order.
       if (sidebarSection) {
         sidebarSection.appendChild(rulesContainer);
         sidebarSection.appendChild(addRuleBtn);
@@ -1307,19 +1316,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     closeRulesModalBtn.addEventListener("click", () => toggleRulesModal(false));
   }
 
-  // Close on outside click (clicking the dark background)
+  // Close on outside click
   window.addEventListener("click", (e) => {
     if (e.target === rulesModal) {
       toggleRulesModal(false);
     }
   });
 
-  // NEW: Auto-close modal when "Generate Recommendations" is clicked
+  // Auto-close modal when "Generate Recommendations" is clicked
   if (generateBtn) {
     generateBtn.addEventListener("click", () => {
-      // If the modal is currently visible...
       if (rulesModal && rulesModal.style.display !== 'none') {
-        // ...close it immediately so the user sees the main screen results
         toggleRulesModal(false);
       }
     });
