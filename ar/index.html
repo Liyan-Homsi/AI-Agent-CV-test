@@ -77,15 +77,15 @@
           
           <!-- Business Rules Label with Optional -->
             <!-- 11-12-2025 Liyan's updates -->
-          <h3 class="rules-label" style="justify-content: space-between; width: 100%;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <i class="fas fa-gavel"></i> قواعد العمل
-              <span class="optional-tag">اختياري</span>
-            </div>
-            <button id="maximize-rules-btn" class="icon-btn" type="button" title="Maximize View">
-              <i class="fas fa-expand"></i>
-            </button>
-          </h3>
+            <h3 class="rules-label" style="justify-content: space-between; width: 100%;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-gavel"></i> قواعد العمل
+                <span class="optional-tag">اختياري</span>
+              </div>
+              <button id="maximize-rules-btn" class="icon-btn" type="button" title="تكبير">
+                <i class="fas fa-expand"></i>
+              </button>
+            </h3>
           <!-- end 11-12-2025 updates -->
 
           
@@ -129,6 +129,22 @@
       <h2><i class="fas fa-star"></i> التوصيات</h2>
       <div id="recommendations-container"></div>
     </section>
+    
+    <!-- 11-12-2025 Liyan's updates -->
+    <div id="rulesModal" class="cv-modal" role="dialog" aria-hidden="true" style="display: none;">
+      <div class="cv-modal-content rules-modal-content">
+        <div class="section-header">
+          <h2><i class="fas fa-gavel"></i> قواعد العمل <span class="optional-tag">اختياري</span></h2>
+          <button class="cv-close-btn" id="closeRulesModal">&times;</button>
+        </div>
+        
+        <div id="rules-modal-body" class="rules-modal-body"></div>
+        
+        <div id="rules-modal-footer" style="margin-top: var(--space-m);">
+           </div>
+      </div>
+    </div>
+    <!-- end 11-12-2025 Liyan's updates -->
   </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
