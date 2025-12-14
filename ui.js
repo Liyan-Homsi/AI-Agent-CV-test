@@ -529,12 +529,7 @@ function openCvModal(allCvResults, initialIndex = 0) {
   const tabs = document.getElementById("cvTabsContainer");
   const content = document.getElementById("cvResultsContainer");
   const submitBtn = document.getElementById("submitCvReview");
-  
-  //11-12-2025 liyan
-  const searchInput = document.getElementById("cvSearchInput");
   if (!modal || !tabs || !content) return;
-  //11-12-2025 liyan
-  if (searchInput) searchInput.value = "";
 
   modalCvData = deepClone(allCvResults || []);
   activeCvIndex = initialIndex;
@@ -571,6 +566,57 @@ function openCvModal(allCvResults, initialIndex = 0) {
   }
 }
 
+// ===============================
+// Download helpers
+// ===============================
+
+function downloadFile(filename, content, type = "application/json") {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
+
+function convertCvToText(cv) {
+  let out = `CV: ${cv.name}\n\n`;
+
+  if (cv.experience?.length) {
+    out += "Experience:\n";
+    cv.experience.forEach(e => {
+      out += `- ${e.jobTitle || ""} at ${e.company || ""} (${e.years || ""})\n`;
+      if (e.description) out += `  ${e.description}\n`;
+    });
+    out += "\n";
+  }
+
+  if (cv.education?.length) {
+    out += "Education:\n";
+    cv.education.forEach(e => {
+      out += `- ${e.degreeField || ""} at ${e.school || ""}\n`;
+    });
+    out += "\n";
+  }
+
+  if (cv.certifications?.length) {
+    out += "Certifications:\n";
+    cv.certifications.forEach(c => {
+      out += `- ${c.title}\n`;
+    });
+    out += "\n";
+  }
+
+  if (cv.skills?.length) {
+    out += "Skills: " + cv.skills.map(s => s.title).join(", ") + "\n\n";
+  }
+
+  return out;
+}
+
 // ---------------------------------------------------------------------------
 // Main bootstrap
 // ---------------------------------------------------------------------------
@@ -598,7 +644,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   let submittedCvData = [];
   let lastProcessedFileNames = [];
-
 
   // Helper: merge recommendations into map and display
   function applyRecommendationsToUi(recommendations, cvArray = uploadedCvs) {
@@ -691,16 +736,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   const recommendationsContainer = document.getElementById("recommendations-container");
 
   const renderSubmittedCvBubbles = (allResults) => {
-    // 11-12-2025 liyan's updates
-    const counterEl = document.getElementById("uploaded-cv-count");
-    if (counterEl) {
-      counterEl.textContent = allResults ? allResults.length : 0;
-    }
-
     const container = document.getElementById("submitted-cv-bubbles");
     if (!container) return;
     container.innerHTML = "";
-    // 11-12-2025 end liyan's updates
 
     allResults.forEach((cv, idx) => {
       const bubble = document.createElement("div");
@@ -1146,6 +1184,29 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
   }
+  // ===============================
+  // Download CVs button
+  // ===============================
+  const downloadBtn = document.getElementById("download-cvs-btn");
+  if (downloadBtn) {
+    downloadBtn.addEventListener("click", () => {
+      if (!submittedCvData || submittedCvData.length === 0) {
+        alert("No CVs to download.");
+        return;
+      }
+  
+      // Download all CVs in one JSON file
+      const json = JSON.stringify(submittedCvData, null, 2);
+      downloadFile("cvs.json", json);
+  
+      // Download each CV as a readable TXT file
+      submittedCvData.forEach(cv => {
+        const txt = convertCvToText(cv);
+        const safeName = cv.name.replace(/\.[^/.]+$/, "");
+        downloadFile(`${safeName}.txt`, txt, "text/plain");
+      });
+    });
+  }
 
   // Modal close behavior
   const closeBtn = document.querySelector(".cv-close-btn");
@@ -1255,136 +1316,4 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
   }
-  // ===========================================================================
-  // Business Rules Maximize Logic (11-12-2025 Liyan's updates)
-  // ===========================================================================
-
-  const maximizeRulesBtn = document.getElementById("maximize-rules-btn");
-  const rulesModal = document.getElementById("rulesModal");
-  const closeRulesModalBtn = document.getElementById("closeRulesModal");
-  
-  // Elements to move (these are defined earlier in your file)
-  const rulesContainer = document.getElementById("rules-container");
-  // Note: addRuleBtn is defined earlier
-  // Note: generateBtn is defined earlier
-  
-  // Destinations inside the modal
-  const rulesModalBody = document.getElementById("rules-modal-body");
-  // NEW: The container for the add button on the white background
-  const rulesModalAddContainer = document.getElementById("rules-modal-add-container");
-  const rulesModalFooter = document.getElementById("rules-modal-footer");
-  
-  // Destination when closing (the sidebar)
-  const sidebarSection = document.querySelector(".merged-section"); 
-
-  function toggleRulesModal(show) {
-    // Ensure all required elements exist before running
-    if (!rulesModal || !rulesModalBody || !rulesModalAddContainer || !rulesModalFooter || !rulesContainer || !addRuleBtn || !generateBtn) {
-        console.error("Missing elements for maximize functionality");
-        return;
-    }
-
-    if (show) {
-      // --- OPENING MODAL ---
-      
-      // 1. Move ONLY the rules container to the gray modal body
-      rulesModalBody.appendChild(rulesContainer);
-      
-      // 2. Move the Add button to its new white container
-      rulesModalAddContainer.appendChild(addRuleBtn);
-      
-      // 3. Move generate button to modal footer
-      rulesModalFooter.appendChild(generateBtn);
-
-      // 4. Show modal
-      rulesModal.style.display = "flex";
-      rulesModal.setAttribute("aria-hidden", "false");
-
-    } else {
-      // --- CLOSING MODAL ---
-      // 1. Hide modal
-      rulesModal.style.display = "none";
-      rulesModal.setAttribute("aria-hidden", "true");
-
-      // 2. Move elements BACK to sidebar in the correct order.
-      if (sidebarSection) {
-        sidebarSection.appendChild(rulesContainer);
-        sidebarSection.appendChild(addRuleBtn);
-        sidebarSection.appendChild(generateBtn);
-      }
-    }
-  }
-
-  // --- Event Listeners ---
-
-  if (maximizeRulesBtn) {
-    maximizeRulesBtn.addEventListener("click", (e) => {
-      e.preventDefault(); 
-      toggleRulesModal(true);
-    });
-  }
-
-  if (closeRulesModalBtn) {
-    closeRulesModalBtn.addEventListener("click", () => toggleRulesModal(false));
-  }
-
-  // Close on outside click
-  window.addEventListener("click", (e) => {
-    if (e.target === rulesModal) {
-      toggleRulesModal(false);
-    }
-  });
-
-  // Auto-close modal when "Generate Recommendations" is clicked
-  if (generateBtn) {
-    generateBtn.addEventListener("click", () => {
-      if (rulesModal && rulesModal.style.display !== 'none') {
-        toggleRulesModal(false);
-      }
-    });
-  }
-
-  // ===========================================================================
-  // Uploaded CVs Maximize Logic (Opens CV Analysis Review)
-  // ===========================================================================
-  const maximizeUploadedBtn = document.getElementById("maximize-uploaded-btn");
-
-  if (maximizeUploadedBtn) {
-    maximizeUploadedBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      
-      // Check if we have any processed CVs to show
-      // submittedCvData is the variable holding your analyzed CVs
-      if (typeof submittedCvData !== 'undefined' && submittedCvData.length > 0) {
-        // Open the existing CV Modal, defaulting to the first CV
-        openCvModal(submittedCvData, 0);
-      } else {
-        // Simple feedback if clicked while empty
-        alert("Please upload and analyze a CV first to view details.");
-      }
-    });
-  }
-
-  // ===========================================================================
-  // CV Search / Filter Logic
-  // ===========================================================================
-  const cvSearchInput = document.getElementById("cvSearchInput");
-  
-  if (cvSearchInput) {
-    cvSearchInput.addEventListener("input", (e) => {
-      const searchTerm = e.target.value.toLowerCase().trim();
-      const tabs = document.querySelectorAll(".cv-tab");
-      
-      tabs.forEach(tab => {
-        const name = (tab.textContent || "").toLowerCase();
-        // Toggle visibility based on match
-        if (name.includes(searchTerm)) {
-          tab.style.display = ""; // Reset to default (flex/block)
-        } else {
-          tab.style.display = "none";
-        }
-      });
-    });
-  }
-  // end 11-12-2025 Liyan's updates
 });
