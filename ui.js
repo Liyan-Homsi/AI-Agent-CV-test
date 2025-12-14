@@ -688,33 +688,66 @@ function downloadRecommendationsAsPDF(recommendations, language = 'en') {
         candidateSection.appendChild(card);
       });
 
-      // 4. Add Timeline Visualization to PDF (Simplified for Print)
+      // 4. Add Timeline Visualization to PDF (Matching UI Timeline)
       if (candidateTimeline.length > 0 && candidateTotalHours > 0) {
         const timelineWrapper = document.createElement('div');
-        timelineWrapper.className = 'pdf-timeline-wrapper';
-        if (isArabic) timelineWrapper.classList.add('pdf-timeline-rtl');
+        timelineWrapper.className = 'timeline-wrapper';
         
-        const titleText = isArabic ? "الوقت التقريبي للإكمال" : "Estimated Timeline";
+        const titleText = isArabic ? "الوقت التقريبي لإكمال الشهادات المقترحة" : "Estimated timeline to complete";
+        const totalLabel = UI_TEXT[language].total;
         const hourWord = UI_TEXT[language].hours;
-        
-        const barsHtml = candidateTimeline.map(item => {
-          const safeHours = Number(item.hours) || 0;
-          const percentage = safeHours > 0 ? (safeHours / candidateTotalHours) * 100 : 0;
-          // Simple grayscale/monochrome friendly colors for PDF
-          return `
-            <div class="pdf-bar-segment" style="width:${percentage}%; background-color:#e0e0e0; border:1px solid #999; display:inline-block; height:15px;"></div>
-          `;
-        }).join('');
 
-        // Text summary instead of complex flexbox bars to ensure PDF engine renders it safely
-        const summaryList = candidateTimeline.map(item => {
-           return `<li>${item.name}: <strong>${item.hours} ${hourWord}</strong></li>`;
-        }).join('');
+        // Helper color function (same as UI)
+        function getColor(hours) {
+          if (hours <= 100) return "#c8f7c5"; // Greenish
+          if (hours < 200) return "#ffe5b4";  // Yellowish
+          return "#f5b5b5";                   // Reddish
+        }
+
+        const barsHtml = `
+          <div class="stacked-bar ${isArabic ? "stacked-bar-rtl" : ""}">
+            ${candidateTimeline.map((item) => {
+              const safeHours = Number(item.hours) || 0;
+              const percentage = safeHours > 0 ? (safeHours / candidateTotalHours) * 100 : 0;
+              const displayHours = `${safeHours} ${hourWord}`;
+              const color = getColor(safeHours);
+
+              return `
+                  <div class="bar-segment" style="width:${percentage}%; background:${color}" title="${item.name}: ${displayHours}">
+                    <span class="segment-hours">${safeHours > 0 ? safeHours : ''}</span>
+                  </div>
+                `;
+            }).join("")}
+          </div>
+
+          <div class="stacked-labels ${isArabic ? "stacked-labels-rtl" : ""}">
+            ${candidateTimeline.map((item) => {
+              const safeHours = Number(item.hours) || 0;
+              const percentage = safeHours > 0 ? (safeHours / candidateTotalHours) * 100 : 0;
+              if (percentage < 5) return ""; // Hide label if too small
+              return `
+                  <div class="segment-label" style="width:${percentage}%">
+                    ${item.name}
+                  </div>
+                `;
+            }).join("")}
+          </div>
+        `;
+
+        const totalHtml = `
+          <div class="total-label">
+            ${totalLabel}: <strong>${candidateTotalHours}</strong> ${hourWord}
+          </div>
+        `;
 
         timelineWrapper.innerHTML = `
-          <h4 style="margin-bottom:8px; color:#023B42;">${titleText} (${UI_TEXT[language].total}: ${candidateTotalHours} ${hourWord})</h4>
-          <div style="font-size:0.9rem;">
-            <ul style="list-style: disc; padding-${isArabic ? 'right':'left'}: 20px;">${summaryList}</ul>
+          <h4 class="timeline-title ${isArabic ? "timeline-title-rtl" : ""}">${titleText}</h4>
+          <div class="stacked-timeline ${isArabic ? "stacked-timeline-rtl" : ""}">
+            ${barsHtml}
+            <div class="total-row">
+              <div class="total-line"></div>
+              ${totalHtml}
+            </div>
           </div>
         `;
         candidateSection.appendChild(timelineWrapper);
