@@ -92,18 +92,11 @@
           <div class="section-divider"></div>
           
           <!-- Business Rules Label with Optional -->
-           <!-- 11-12-2025 Liyan's updates -->
-          <h3 class="rules-label" style="justify-content: space-between; width: 100%;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <i class="fas fa-gavel"></i> Business Rules
-              <span class="optional-tag">Optional</span>
-            </div>
-            <button id="maximize-rules-btn" class="icon-btn" type="button" title="Maximize View">
-              <i class="fas fa-expand"></i>
-            </button>
+          <h3 class="rules-label">
+            <i class="fas fa-gavel"></i> Business Rules
+            <span class="optional-tag">Optional</span>
           </h3>
-          <!-- end 11-12-2025 updates -->
-
+          
           <!-- Rules Container -->
           <div id="rules-container" class="rules-container">
             <!-- Rules inputs will be dynamically added here -->
@@ -123,22 +116,8 @@
         </section>
 
         <!-- Uploaded CVs Section -->
-         <!-- 11-12-2025 liyan's updates -->
-         <section class="panel-section card uploaded-cvs-section">
-          <h3 style="justify-content: space-between; width: 100%; display: flex; align-items: center;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <i class="fas fa-folder-open"></i> Uploaded CVs
-              <span id="uploaded-cv-count" class="optional-tag">0</span>
-            </div>
-            <button id="maximize-uploaded-btn" class="icon-btn" type="button" title="Maximize View">
-              <i class="fas fa-expand"></i>
-            </button>
-          </h3>
-          
-          <div id="submitted-cv-bubbles" class="submitted-cv-bubbles" aria-live="polite"></div>
-        </section>
-          <!-- end 11-12-2025 liyan's updates  -->
-          
+        <section class="panel-section card uploaded-cvs-section">
+          <h3><i class="fas fa-folder-open"></i> Uploaded CVs</h3>
           <div id="submitted-cv-bubbles" class="submitted-cv-bubbles" aria-live="polite"></div>
         </section>
       </aside>
@@ -147,14 +126,10 @@
     <!-- CV Upload Modal -->
     <div id="cvModal" class="cv-modal" role="dialog" aria-modal="true" aria-labelledby="cvModalTitle" hidden>
       <div class="cv-modal-content">
+        <button id="download-cvs-btn" class="action-full">Download CVs</button>
         <button class="cv-close-btn" aria-label="Close CV modal">&times;</button>
         <h2 id="cvModalTitle">CV Analysis Review</h2>
-        <div class="cv-search-container">
-          <i class="fas fa-search search-icon"></i>
-          <input type="text" id="cvSearchInput" placeholder="Search CV by name..." class="cv-search-input" autocomplete="off" />
-        </div>
-
-        <div id="cvTabsContainer" class="cv-tabs" role="tablist"></div>
+    
         <div id="cvTabsContainer" class="cv-tabs" role="tablist"></div>
         <div id="cvResultsContainer" class="cv-results" role="region"></div>
         <button id="submitCvReview" class="cv-submit-btn">Submit</button>
@@ -170,25 +145,6 @@
         <!-- Results will be dynamically populated here by JavaScript -->
       </div>
     </section>
-
-    <!-- 11-12-2025 Liyan's updates -->
-    <<div id="rulesModal" class="cv-modal" role="dialog" aria-hidden="true" style="display: none;">
-      <div class="cv-modal-content rules-modal-content">
-        <div class="section-header">
-          <h2><i class="fas fa-gavel"></i> Business Rules <span class="optional-tag">Optional</span></h2>
-          <button class="cv-close-btn" id="closeRulesModal">&times;</button>
-        </div>
-        
-        <div id="rules-modal-body" class="rules-modal-body"></div>
-
-        <div id="rules-modal-add-container" style="margin-top: var(--space-m);">
-           </div>
-        
-        <div id="rules-modal-footer" style="margin-top: var(--space-m);">
-           </div>
-      </div>
-    </div>
-    <!-- end 11-12-2025 Liyan's updates -->
   </main>
 
   <!-- External Libraries for File Parsing -->
@@ -211,5 +167,3 @@
   <script type="module" src="ui.js"></script>
 </body>
 </html>
-
-
