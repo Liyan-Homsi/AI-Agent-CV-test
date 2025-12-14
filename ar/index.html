@@ -76,18 +76,10 @@
           <div class="section-divider"></div>
           
           <!-- Business Rules Label with Optional -->
-            <!-- 11-12-2025 Liyan's updates -->
-            <h3 class="rules-label" style="justify-content: space-between; width: 100%;">
-              <div style="display: flex; align-items: center; gap: 10px;">
-                <i class="fas fa-gavel"></i> قواعد العمل
-                <span class="optional-tag">اختياري</span>
-              </div>
-              <button id="maximize-rules-btn" class="icon-btn" type="button" title="تكبير">
-                <i class="fas fa-expand"></i>
-              </button>
-            </h3>
-          <!-- end 11-12-2025 updates -->
-
+          <h3 class="rules-label">
+            <i class="fas fa-gavel"></i> قواعد العمل
+            <span class="optional-tag">اختياري</span>
+          </h3>
           
           <!-- Rules Container -->
           <div id="rules-container" class="rules-container">
@@ -108,21 +100,10 @@
         </section>
 
         <!-- Uploaded CVs Section -->
-         <!-- 11-12-2025 liyan's updates -->
         <section class="panel-section card uploaded-cvs-section">
-          <section class="panel-section card uploaded-cvs-section">
-            <h3 style="justify-content: space-between; width: 100%; display: flex; align-items: center;">
-              <div style="display: flex; align-items: center; gap: 10px;">
-                <i class="fas fa-folder-open"></i> السير الذاتية المرفوعة
-                <span id="uploaded-cv-count" class="optional-tag">0</span>
-              </div>
-              <button id="maximize-uploaded-btn" class="icon-btn" type="button" title="تكبير">
-                <i class="fas fa-expand"></i>
-              </button>
-            </h3>
-            <div id="submitted-cv-bubbles" class="submitted-cv-bubbles" aria-live="polite"></div>
-          </section>
-          <!-- 11-12-2025 end -->
+          <h3><i class="fas fa-folder-open"></i> السير الذاتية المرفوعة</h3>
+          <div id="submitted-cv-bubbles" class="submitted-cv-bubbles" aria-live="polite"></div>
+        </section>
       </aside>
     </div>
 
@@ -130,14 +111,7 @@
       <div class="cv-modal-content">
         <button class="cv-close-btn" aria-label="إغلاق">&times;</button>
         <h2 id="cvModalTitle">مراجعة التحليل</h2>
-        
-        <div class="cv-search-container">
-          <i class="fas fa-search search-icon"></i>
-          <input type="text" id="cvSearchInput" placeholder="بحث عن السيرة الذاتية..." class="cv-search-input" autocomplete="off" />
-        </div>
-
         <div id="cvTabsContainer" class="cv-tabs" role="tablist"></div>
-        
         <div id="cvResultsContainer" class="cv-results" role="region"></div>
         <button id="submitCvReview" class="cv-submit-btn">إرسال</button>
       </div>
@@ -147,25 +121,6 @@
       <h2><i class="fas fa-star"></i> التوصيات</h2>
       <div id="recommendations-container"></div>
     </section>
-
-    <!-- 11-12-2025 Liyan's updates -->
-    <div id="rulesModal" class="cv-modal" role="dialog" aria-hidden="true" style="display: none;">
-      <div class="cv-modal-content rules-modal-content">
-        <div class="section-header">
-          <h2><i class="fas fa-gavel"></i> قواعد العمل <span class="optional-tag">اختياري</span></h2>
-          <button class="cv-close-btn" id="closeRulesModal">&times;</button>
-        </div>
-        
-        <div id="rules-modal-body" class="rules-modal-body"></div>
-
-        <div id="rules-modal-add-container" style="margin-top: var(--space-m);">
-           </div>
-        
-        <div id="rules-modal-footer" style="margin-top: var(--space-m);">
-           </div>
-      </div>
-    </div>
-    <!-- end 11-12-2025 Liyan's updates -->
   </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
