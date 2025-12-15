@@ -329,14 +329,14 @@ button:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
 .section-divider {
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(0,0,0,0.1), transparent);
-  margin: var(--space-xs) 0;
+  margin: var(--space-s) 0;
   flex-shrink: 0;
 }
 
 /* === UPLOADED CVS SECTION === */
 /* 15-12-2025 liyan's updates */
 .uploaded-cvs-section {
-  margin-top: var(--space-xxs);
+  margin-top: var(--space-xs);
 }
 /* 15-12-2025 end liyan's updates */
 
@@ -355,16 +355,6 @@ button:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
   color: var(--primary);
   font-size: 1rem;
 }
-
-/* 15-12-2025 liyan's updates */
-@media (min-width: 720px) {
-  /* Add extra bottom space inside the Uploaded CVs card so its bottom aligns
-     closer to the Chat Assistant card (roughly ~1cm more visually) */
-  .uploaded-cvs-section {
-    padding-bottom: calc(var(--space-m) + 32px);
-  }
-}
-/* 15-12-2025 end  liyan's updates */
 
 /* === RULES CONTAINER === */
 .rules-container {
@@ -1412,6 +1402,16 @@ html, body {
    .uploaded-cvs-section h3 .fa-folder-open {
     color: var(--primary) !important;
   }
+/* 15-12-2025 liyan's updates */
+@media (min-width: 720px) {
+  / Pull the Uploaded CVs card upward and give it a bit more internal space /
+  .uploaded-cvs-section {
+    margin-top: var(--space-s);         / was var(--space-l) /
+    padding-top: calc(var(--space-m));  / extra space inside top /
+    padding-bottom: calc(var(--space-m) + 8px); / extra space inside bottom /
+  }
+}
+/* 15-12-2025 end  liyan's updates */
   /* 1. Force the FOLDER icon to stay TEAL */
 .uploaded-cvs-section h3 .fa-folder-open {
   color: var(--primary) !important;
@@ -1727,4 +1727,3 @@ body.keep-ltr-layout .bot-message ul {
   margin-right: 8px;
   cursor: pointer;
 }
-
