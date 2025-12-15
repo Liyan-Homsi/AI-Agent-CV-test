@@ -206,44 +206,6 @@ export function summarizeRecommendationsForChat(recs) {
 }
 
 // Year extraction helpers
-export function extractYear(str) {
-  const match = str.match(/\b(19|20)\d{2}\b/);
-  return match ? parseInt(match[0], 10) : null;
-}
-
-// --- In storage-catalog.js ---
-
-/**
- * Helper to parse loose date strings into JS Date objects
- */
-function parseDate(dateStr) {
-  if (!dateStr) return null;
-  const cleaned = dateStr.trim().toLowerCase();
-
-  // Handle "current" jobs
-  if (['present', 'current', 'now', 'date', 'today'].includes(cleaned)) {
-    return new Date(); // Return exact current time
-  }
-
-  // Handle simple year only "2020" -> Jan 1, 2020
-  if (/^\d{4}$/.test(cleaned)) {
-    return new Date(parseInt(cleaned), 0, 1);
-  }
-
-  // Handle standard formats "Dec 2020", "2020-12", "12/20/2020"
-  const date = new Date(cleaned);
-  
-  // If invalid date, return null
-  if (isNaN(date.getTime())) return null;
-  
-  return date;
-}
-
-
-// 15-12-2025 Liyan's updates
-/**
- * Calculates duration in years with 1 decimal precision (e.g. 2.5 years)
- */
 export function calculateYearsFromPeriod(period) {
   if (!period || typeof period !== 'string') return 0;
 
@@ -285,5 +247,3 @@ export function calculateTotalExperience(experienceArray) {
   
   return Math.round(totalYears * 10) / 10;
 }
-
-// 15-12-2025 end Liyan's updates
