@@ -170,14 +170,17 @@ button:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
 }
 
 /* === MERGED SECTION (Upload CVs & Business Rules) === */
+/* 15-12-2025 liyan's updates */
 .merged-section {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  min-height: 0;
+  /* CHANGE THIS: from min-height: 0 to a substantial size */
+  min-height: 450px; 
   overflow: hidden;
   position: relative;
 }
+/* 15-12-2025 end liyan's updates */
 
 .merged-section h3 {
   margin: 0 0 var(--space-m) 0;
@@ -1629,7 +1632,15 @@ button#maximize-uploaded-btn:hover i {
 @media (min-width: 720px) {
   .main-content { flex-direction: row; align-items: start; gap: var(--space-l); }
   .chat-section { flex: 2; min-height: 600px; max-height: 600px; }
-  .side-panel { flex: 1; max-width: 420px; height: 600px; }
+  /* 15-12-2025 liyan's updates */
+  .side-panel { 
+    flex: 1; 
+    max-width: 420px; 
+    /* CHANGE THIS: from height: 600px to min-height */
+    height: auto; 
+    min-height: 600px;
+  }
+  /* 15-12-2025 liyan's updates */
 }
 
 /* larger desktops */
