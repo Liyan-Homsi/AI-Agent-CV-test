@@ -1717,3 +1717,30 @@ body.keep-ltr-layout .bot-message ul {
   margin-right: 8px;
   cursor: pointer;
 }
+
+/* 15-12-2025 liyan's updates */
+@media (min-width: 720px) {
+  /* Give more vertical space to Chat Assistant and side panel cards */
+  .chat-section {
+    min-height: 720px;
+    max-height: 720px;
+  }
+
+  .side-panel {
+    height: 720px;
+    max-height: 720px;
+  }
+}
+
+@media (min-width: 1100px) {
+  .chat-section {
+    min-height: 720px;
+    max-height: 720px;
+  }
+
+  .side-panel {
+    height: 720px;
+    max-height: 720px;
+  }
+}
+/* 15-12-2025 end  liyan's updates */
