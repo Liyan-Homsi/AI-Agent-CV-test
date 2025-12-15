@@ -329,14 +329,14 @@ button:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
 .section-divider {
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(0,0,0,0.1), transparent);
-  margin: var(--space-s) 0;
+  margin: var(--space-xs) 0;
   flex-shrink: 0;
 }
 
 /* === UPLOADED CVS SECTION === */
 /* 15-12-2025 liyan's updates */
 .uploaded-cvs-section {
-  margin-top: var(--space-xs);
+  margin-top: var(--space-xxs);
 }
 /* 15-12-2025 end liyan's updates */
 
