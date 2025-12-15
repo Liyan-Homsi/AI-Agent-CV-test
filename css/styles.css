@@ -111,12 +111,11 @@ img,video{ max-width:100%; height:auto; display:block; }
   display: flex;
   flex-direction: column;
   gap: var(--space-l);
-  margin-top: var(--space-s); /* Small gap from header */
-  /* Add/Update these lines: */
-  flex: 1;              /* Fill the .container height */
-  height: 100%;         /* Ensure explicit height for children */
-  min-height: 0;        /* Allow shrinking */
-  overflow: hidden;     /* Prevent overflow out of this area */
+  margin-top: var(--space-s);
+  flex: 1;          /* Fill the .container */
+  height: 100%;     /* Strict height */
+  min-height: 0;    /* Allow shrinking */
+  overflow: hidden; /* Stop overflow here */
 }
 /* 15-12-2025 end liyan's updates */
 
@@ -399,6 +398,9 @@ button:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
   border-radius: var(--radius-sm);
   padding: var(--space-s);
   background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+/* 15-12-2025 liyan's updates*/
+  max-height: none; /* Remove any fixed max-height */
+/* 15-12-2025 end liyan's updates*/
 }
 
 /* Custom scrollbar */
@@ -1661,22 +1663,49 @@ button#maximize-uploaded-btn:hover i {
 @media (min-width: 720px) {
   .main-content {
     flex-direction: row;
-    align-items: stretch; /* Change 'start' to 'stretch' to make columns equal height */
+    align-items: stretch;
     gap: var(--space-l);
   }
 
+  /* Chat Section fills height */
   .chat-section {
     flex: 2;
-    height: 100%;       /* Fill vertical space */
-    min-height: 0;      /* Remove the old 600px limit */
-    max-height: none;   /* Remove the old 600px limit */
+    height: 100%;
+    min-height: 0;
+    max-height: none;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Chat messages inside scroll properly */
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
   }
 
+  /* Side Panel Container */
   .side-panel {
     flex: 1;
     max-width: 420px;
-    height: 100%;       /* Fill vertical space */
-    min-height: 0;      /* Remove the old 600px limit */
+    height: 100%;       /* Full height */
+    display: flex;      /* Flex column */
+    flex-direction: column;
+    min-height: 0;      /* Crucial fix */
+  }
+  
+  /* TOP CARD: Grows to fill space */
+  .merged-section {
+    flex: 1;            /* Take all empty space */
+    display: flex;
+    flex-direction: column;
+    min-height: 0;      /* Allow internal scrolling */
+    margin-bottom: 0;   /* Remove bottom margin if handled by gap */
+  }
+
+  /* BOTTOM CARD: Stays visible (Shrink wrap) */
+  .uploaded-cvs-section {
+    flex: 0 0 auto;     /* Do not grow, do not shrink */
+    margin-top: var(--space-xs); /* Keep the small gap */
   }
 }
 /* 15-12-2025 liyan's updates */
@@ -1685,15 +1714,12 @@ button#maximize-uploaded-btn:hover i {
 @media (min-width: 1100px) {
   /* 15-12-2025 Liyan's updates */
   .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: var(--space-m);
-    /* Add these lines: */
-    flex: 1;              /* Take remaining vertical space */
-    display: flex;        /* Make it a flex container */
+    flex: 1;
+    display: flex;
     flex-direction: column;
-    min-height: 0;        /* Crucial for nested scrollbars to work */
+    min-height: 0;
     width: 100%;
+    padding-bottom: var(--space-s); /* Small padding at bottom */
   }
   /* 15-12-2025 end Liyan's updates */
   .chat-section { min-height: 600px; max-height: 600px; }
