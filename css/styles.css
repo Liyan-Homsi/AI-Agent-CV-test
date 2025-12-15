@@ -170,18 +170,14 @@ button:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
 }
 
 /* === MERGED SECTION (Upload CVs & Business Rules) === */
-/* 15-12-2025 liyan's updates */
 .merged-section {
-  /* flex-shrink: 0 prevents compression when space is tight */
-  flex: 0 0 auto; 
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  /* Ensure a healthy minimum height so rules are always visible */
-  min-height: 450px; 
+  min-height: 0;
   overflow: hidden;
   position: relative;
 }
-/* 15-12-2025 end liyan's updates */
 
 .merged-section h3 {
   margin: 0 0 var(--space-m) 0;
@@ -1630,34 +1626,11 @@ button#maximize-uploaded-btn:hover i {
 /* === BREAKPOINTS === */
 
 /* tablet / small laptop */
-  /* 15-12-2025 liyan's updates */
 @media (min-width: 720px) {
-  .main-content {
-    flex-direction: row;
-    /* Changed from 'start' to 'stretch' so Chat Assistant grows with Side Panel */
-    align-items: stretch; 
-    gap: var(--space-l);
-  }
-
-  .chat-section {
-    flex: 2;
-    /* Ensure chat takes full height if side panel grows */
-    display: flex;
-    flex-direction: column; 
-  }
-
-  .side-panel {
-    flex: 1;
-    max-width: 420px;
-    /* Crucial: Set height to auto so it grows instead of squishing contents */
-    height: auto; 
-    display: flex;
-    flex-direction: column;
-    /* Remove any fixed heights like 600px if they exist here */
-  }
+  .main-content { flex-direction: row; align-items: start; gap: var(--space-l); }
+  .chat-section { flex: 2; min-height: 600px; max-height: 600px; }
+  .side-panel { flex: 1; max-width: 420px; height: 600px; }
 }
-  /* 15-12-2025 end liyan's updates */
-
 
 /* larger desktops */
 @media (min-width: 1100px) {
