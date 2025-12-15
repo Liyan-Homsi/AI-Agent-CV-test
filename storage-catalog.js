@@ -211,27 +211,79 @@ export function extractYear(str) {
   return match ? parseInt(match[0], 10) : null;
 }
 
-export function calculateYearsFromPeriod(period) {
-  if (!period || typeof period !== "string") return 0;
-  const currentYear = new Date().getFullYear();
-  const parts = period.split(/\s*[-–—to]+\s*/i);
-  if (parts.length < 2) return 0;
-  const startYear = extractYear(parts[0].trim());
-  const endYear =
-    parts[1].toLowerCase().includes("present") ||
-    parts[1].toLowerCase().includes("current")
-      ? currentYear
-      : extractYear(parts[1].trim());
-  if (!startYear || !endYear) return 0;
-  return Math.max(0, endYear - startYear);
+// --- In storage-catalog.js ---
+
+/**
+ * Helper to parse loose date strings into JS Date objects
+ */
+function parseDate(dateStr) {
+  if (!dateStr) return null;
+  const cleaned = dateStr.trim().toLowerCase();
+
+  // Handle "current" jobs
+  if (['present', 'current', 'now', 'date', 'today'].includes(cleaned)) {
+    return new Date(); // Return exact current time
+  }
+
+  // Handle simple year only "2020" -> Jan 1, 2020
+  if (/^\d{4}$/.test(cleaned)) {
+    return new Date(parseInt(cleaned), 0, 1);
+  }
+
+  // Handle standard formats "Dec 2020", "2020-12", "12/20/2020"
+  const date = new Date(cleaned);
+  
+  // If invalid date, return null
+  if (isNaN(date.getTime())) return null;
+  
+  return date;
 }
 
+
+// 15-12-2025 Liyan's updates
+/**
+ * Calculates duration in years with 1 decimal precision (e.g. 2.5 years)
+ */
+export function calculateYearsFromPeriod(period) {
+  if (!period || typeof period !== 'string') return 0;
+
+  // Split using regex that catches " - ", " to ", " – " (en-dash)
+  const separatorRegex = /\s+(?:-|–|—|to)\s+/i;
+  const parts = period.split(separatorRegex);
+
+  if (parts.length < 2) return 0;
+
+  const startDate = parseDate(parts[0]);
+  const endDate = parseDate(parts[1]);
+
+  if (!startDate || !endDate) return 0;
+
+  // Calculate difference in months
+  const yearsDiff = endDate.getFullYear() - startDate.getFullYear();
+  const monthsDiff = endDate.getMonth() - startDate.getMonth();
+  
+  let totalMonths = (yearsDiff * 12) + monthsDiff;
+  totalMonths = Math.max(0, totalMonths);
+
+  // Convert to years (rounded to 1 decimal)
+  const years = totalMonths / 12;
+  return Math.round(years * 10) / 10;
+}
+
+/**
+ * Calculates total experience across ALL jobs
+ */
 export function calculateTotalExperience(experienceArray) {
   if (!Array.isArray(experienceArray)) return 0;
+  
   let totalYears = 0;
   experienceArray.forEach((exp) => {
+    // Look for 'period' or 'years' field
     const period = exp.period || exp.years || "";
     totalYears += calculateYearsFromPeriod(period);
   });
+  
   return Math.round(totalYears * 10) / 10;
 }
+
+// 15-12-2025 end Liyan's updates
