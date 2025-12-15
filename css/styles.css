@@ -356,6 +356,16 @@ button:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
   font-size: 1rem;
 }
 
+/* 15-12-2025 liyan's updates */
+@media (min-width: 720px) {
+  /* Add extra bottom space inside the Uploaded CVs card so its bottom aligns
+     closer to the Chat Assistant card (roughly ~1cm more visually) */
+  .uploaded-cvs-section {
+    padding-bottom: calc(var(--space-m) + 32px);
+  }
+}
+/* 15-12-2025 end  liyan's updates */
+
 /* === RULES CONTAINER === */
 .rules-container {
   display: flex;
@@ -1718,29 +1728,3 @@ body.keep-ltr-layout .bot-message ul {
   cursor: pointer;
 }
 
-/* 15-12-2025 liyan's updates */
-@media (min-width: 720px) {
-  /* Give more vertical space to Chat Assistant and side panel cards */
-  .chat-section {
-    min-height: 720px;
-    max-height: 720px;
-  }
-
-  .side-panel {
-    height: 720px;
-    max-height: 720px;
-  }
-}
-
-@media (min-width: 1100px) {
-  .chat-section {
-    min-height: 720px;
-    max-height: 720px;
-  }
-
-  .side-panel {
-    height: 720px;
-    max-height: 720px;
-  }
-}
-/* 15-12-2025 end  liyan's updates */
