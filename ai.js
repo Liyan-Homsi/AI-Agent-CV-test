@@ -452,44 +452,155 @@ Provide recommendations for this specific candidate in strict JSON format.
 }
 // END OF EDIT BY JOUD
 
-export async function analyzeCvsWithAI(cvArray, rulesArray, language = 'en') {
-  const analysisPrompt = buildAnalysisPromptForCvs(cvArray, rulesArray || [], language);
-  const rawResponse = await callGeminiAPI(analysisPrompt, [], "");
+
+// 15-12-2025 liyan's updates
+/**
+ * WORKER FUNCTION: Analyzes a SINGLE CV with strict experience calculations.
+ * This function enforces your business rules on one candidate at a time.
+ */
+export async function analyzeSingleCvWithAI(cv, rulesArray, language = 'en') {
+  const catalogString = getCatalogAsPromptString();
   
-  // Log raw response for debugging
-  console.log("Raw AI Response:", rawResponse);
+  // 1. GENERATE THE STRICT EXPERIENCE SUMMARY
+  let experienceSummary = "No structured experience data available.";
   
-  // Try multiple cleaning strategies
+  if (cv.experience && Array.isArray(cv.experience) && cv.experience.length > 0) {
+    const totalYears = calculateTotalExperience(cv.experience);
+    
+    // Create a breakdown of each role's duration
+    const breakdown = cv.experience.map(job => {
+      const duration = calculateYearsFromPeriod(job.years || job.period); 
+      return `- Role: "${job.jobTitle}" at ${job.company}: **${duration} years**`;
+    }).join("\n");
+
+    experienceSummary = `
+*** VERIFIED EXPERIENCE CALCULATIONS ***
+(Use these exact numbers for enforcing Business Rules)
+- TOTAL EXPERIENCE: ${totalYears} Years
+- DETAILED BREAKDOWN:
+${breakdown}
+****************************************
+`;
+  }
+
+  const langInstruction = language === 'ar' 
+    ? "Output the 'reason' field strictly in Arabic. Keep 'candidateName' and 'certName' in their original text."
+    : "Output the 'reason' field in English.";
+
+  // 2. BUILD THE PROMPT WITH CALCULATIONS INJECTED
+  const prompt = `
+${ANALYSIS_SYSTEM_PROMPT.trim()}
+
+**Catalog of Certifications:**
+${catalogString}
+${langInstruction}
+
+**Business Rules (Apply these STRICTLY):**
+${rulesArray && rulesArray.length > 0 ? rulesArray.map((r) => `- ${r}`).join("\n") : "No specific business rules provided."}
+
+**Candidate Analysis Data:**
+${experienceSummary} 
+
+**CV Raw Text:**
+--- CV Name: ${cv.name} ---
+${cv.text}
+
+**Task:**
+Provide recommendations for this specific candidate. 
+CRITICAL: You must cross-reference the "Business Rules" with the "VERIFIED EXPERIENCE CALCULATIONS" provided above. 
+- If a rule says "5+ years required" and the calculated total is less, do NOT recommend that certificate.
+- If a rule says "2 years of AI experience", check the "DETAILED BREAKDOWN".
+
+**JSON Structure:**
+{
+  "candidateName": "Full Name Extracted from CV",
+  "recommendations": [
+    {
+      "certId": "pmp",
+      "certName": "Project Management Professional (PMP)",
+      "reason": "Clear explanation of why this matches.",
+      "rulesApplied": ["Rule 1"]
+    }
+  ]
+}
+
+**CRITICAL:** Respond ONLY with valid JSON. No markdown formatting.
+`;
+
+  const rawResponse = await callGeminiAPI(prompt, [], "");
+  
+  // JSON Cleaning Logic
   let cleaned = rawResponse.trim();
-  
-  // Remove markdown code blocks
   cleaned = cleaned.replace(/```json\s*/gi, "").replace(/```\s*/g, "").trim();
   
-  // Try to extract JSON object if there's text before/after
-  // Look for the first { and last } to extract the JSON object
-  const firstBrace = cleaned.indexOf("{");
-  const lastBrace = cleaned.lastIndexOf("}");
-  
-  if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
-    cleaned = cleaned.substring(firstBrace, lastBrace + 1);
+  // Robust extractor
+  function extractJSON(str) {
+    const startIndex = str.indexOf('{');
+    if (startIndex === -1) return null;
+    let balance = 0, inString = false, escaped = false;
+    for (let i = startIndex; i < str.length; i++) {
+      const char = str[i];
+      if (inString) {
+        if (char === '\\' && !escaped) escaped = true;
+        else if (char === '"' && !escaped) inString = false;
+        else escaped = false;
+      } else {
+        if (char === '"') inString = true;
+        else if (char === '{') balance++;
+        else if (char === '}') {
+          balance--;
+          if (balance === 0) return str.substring(startIndex, i + 1);
+        }
+      }
+    }
+    return null;
   }
-  
-  // Remove any leading/trailing non-JSON text
-  cleaned = cleaned.trim();
 
-  let recommendations;
+  const jsonSubset = extractJSON(cleaned);
+  if (jsonSubset) cleaned = jsonSubset;
+
   try {
-    recommendations = JSON.parse(cleaned);
+    const singleResult = JSON.parse(cleaned);
+    singleResult.cvName = cv.name; 
+    return singleResult;
   } catch (err) {
-    console.error("JSON Parsing Error:", err);
-    console.error("Cleaned response that failed to parse:", cleaned);
-    console.error("First 500 chars of cleaned response:", cleaned.substring(0, 500));
-    throw new Error(
-      "The AI returned an invalid JSON format. Check the console for the raw response."
-    );
+    console.error(`Error parsing AI response for ${cv.name}:`, err);
+    return {
+      candidateName: cv.name,
+      cvName: cv.name,
+      recommendations: [],
+      error: "Failed to generate recommendations."
+    };
   }
-  return recommendations;
 }
+
+
+/**
+ * MAIN FUNCTION: Analyzes MULTIPLE CVs strictly.
+ * Your UI calls this function. It loops through the list and analyzes each CV individually.
+ */
+export async function analyzeCvsWithAI(cvArray, rulesArray, language = 'en') {
+  // 1. Check if array exists
+  if (!cvArray || cvArray.length === 0) {
+    return { candidates: [] };
+  }
+
+  console.log(`Starting strict analysis for ${cvArray.length} CVs...`);
+
+  // 2. Loop through all CVs and analyze them in parallel using the worker function
+  const promises = cvArray.map(cv => 
+    analyzeSingleCvWithAI(cv, rulesArray, language)
+  );
+
+  // 3. Wait for all to finish
+  const results = await Promise.all(promises);
+
+  // 4. Return in the format UI.js expects
+  return {
+    candidates: results
+  };
+}
+// 15-12-2025 end liyan's updates
 
 export function displayRecommendations(recommendations, containerEl, resultsSectionEl, language = 'en') {
   console.log("📋 displayRecommendations called with:", recommendations);
