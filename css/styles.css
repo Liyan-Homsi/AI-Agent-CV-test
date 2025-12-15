@@ -329,7 +329,7 @@ button:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
 .section-divider {
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(0,0,0,0.1), transparent);
-  margin: var(--space-m) 0;
+  margin: var(--space-s) 0;
   flex-shrink: 0;
 }
 
